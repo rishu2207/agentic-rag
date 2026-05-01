@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install only what Gradio needs
+RUN pip install --no-cache-dir gradio>=4.0.0 httpx>=0.28.1
+
+# Copy the application code
+COPY backend/gradio_app.py /app/backend/gradio_app.py
+COPY gradio_launcher.py /app/gradio_launcher.py
+
+# Make sure backend is a proper package
+RUN touch /app/backend/__init__.py
+
+EXPOSE 7861
+
+ENV PYTHONUNBUFFERED=1
+
+# API_BASE_URL will be injected via compose.yml env
+CMD ["python", "gradio_launcher.py"]
